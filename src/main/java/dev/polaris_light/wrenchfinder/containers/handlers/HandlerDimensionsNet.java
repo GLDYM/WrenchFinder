@@ -12,18 +12,18 @@ public class HandlerDimensionsNet implements IContainerHandler {
 
     @Override
     public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
-        return inventoryStack == player.getOffhandItem() && DimensionsNet.getNetFromPlayer(player) != null;
+        return inventoryStack == player.getOffhandItem() && DimensionsNet.getPrimaryNetFromPlayer(player) != null;
     }
 
     @Override
     public int getSignature(Player player, ItemStack inventoryStack) {
-        DimensionsNet net = DimensionsNet.getNetFromPlayer(player);
+        DimensionsNet net = DimensionsNet.getPrimaryNetFromPlayer(player);
         return net != null ? 10000 + net.getId() : -1;
     }
 
     @Override
     public int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack) {
-        DimensionsNet net = DimensionsNet.getNetFromPlayer(player);
+        DimensionsNet net = DimensionsNet.getPrimaryNetFromPlayer(player);
         if (net == null) {
             return 0;
         }
@@ -35,7 +35,7 @@ public class HandlerDimensionsNet implements IContainerHandler {
 
     @Override
     public int useItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack, int count) {
-        DimensionsNet net = DimensionsNet.getNetFromPlayer(player);
+        DimensionsNet net = DimensionsNet.getPrimaryNetFromPlayer(player);
         if (net == null) {
             return count;
         }
