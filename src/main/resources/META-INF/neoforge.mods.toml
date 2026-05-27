@@ -29,7 +29,7 @@ side = "BOTH"
 [[dependencies.wrenchfinder]]
 modId = "cloth_config"
 type = "required"
-versionRange = "[26.1.0,)"
+versionRange = "[15.0.0,)"
 ordering = "NONE"
 side = "BOTH"
 

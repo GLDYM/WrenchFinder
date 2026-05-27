@@ -49,9 +49,8 @@ public final class InventoryUtil {
     }
 
     public static List<ItemStack> getFullInv(Player player) {
-        ArrayList<ItemStack> inventory = new ArrayList<>();
-        inventory.add(player.getOffhandItem());
-        inventory.addAll(player.getInventory().getNonEquipmentItems());
+        ArrayList<ItemStack> inventory = new ArrayList<>(player.getInventory().offhand);
+        inventory.addAll(player.getInventory().items);
         inventory.addAll(getArmor(player));
         inventory.addAll(getCuriosInv(player));
         return inventory;

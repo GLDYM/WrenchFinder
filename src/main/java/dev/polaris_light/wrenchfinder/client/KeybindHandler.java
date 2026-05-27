@@ -3,27 +3,26 @@ package dev.polaris_light.wrenchfinder.client;
 import dev.polaris_light.wrenchfinder.WrenchFinder;
 import dev.polaris_light.wrenchfinder.config.ClientConfig;
 import dev.polaris_light.wrenchfinder.logic.ClientRuleResolver;
+import dev.polaris_light.wrenchfinder.network.ModMessages;
 import dev.polaris_light.wrenchfinder.network.PacketFindItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
 public class KeybindHandler {
-    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(WrenchFinder.loc("category"));
     public static final KeyMapping KEY_LOOKUP = new KeyMapping(
         getKey("lookup"),
         GLFW.GLFW_KEY_Z,
-        CATEGORY
+        getKey("category")
     );
 
     private static String getKey(String name) {
@@ -44,7 +43,7 @@ public class KeybindHandler {
                 continue;
             }
 
-            Identifier blockId = BuiltInRegistries.BLOCK.getKey(
+            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(
                 minecraft.level.getBlockState(blockHitResult.getBlockPos()).getBlock()
             );
             if (blockId == null) {
@@ -58,7 +57,7 @@ public class KeybindHandler {
                 continue;
             }
 
-            ClientPacketDistributor.sendToServer(new PacketFindItem(
+            ModMessages.sendToServer(new PacketFindItem(
                 blockId.toString(),
                 itemPatterns,
                 ClientConfig.get().handActionMode,

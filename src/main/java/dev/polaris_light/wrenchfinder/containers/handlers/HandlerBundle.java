@@ -3,7 +3,6 @@ package dev.polaris_light.wrenchfinder.containers.handlers;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.BundleContents;
 import dev.polaris_light.wrenchfinder.api.IContainerHandler;
@@ -56,10 +55,7 @@ public class HandlerBundle implements IContainerHandler
     }
 
     private void setItemList(ItemStack itemStack, List<ItemStack> itemStacks) {
-        List<ItemStackTemplate> templates = itemStacks.stream()
-            .map(stack -> new ItemStackTemplate(stack.getItem(), stack.getCount()))
-                .toList();
-        BundleContents contents = new BundleContents(templates);
+        BundleContents contents = new BundleContents(itemStacks);
         itemStack.set(DataComponents.BUNDLE_CONTENTS, contents);
     }
 }

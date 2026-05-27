@@ -2,8 +2,11 @@ package dev.polaris_light.wrenchfinder.containers;
 
 import dev.polaris_light.wrenchfinder.WrenchFinder;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerAdvWirelessTerminal;
+import dev.polaris_light.wrenchfinder.containers.handlers.HandlerBotania;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerBundle;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerCapability;
+import dev.polaris_light.wrenchfinder.containers.handlers.HandlerDimensionsNet;
+import dev.polaris_light.wrenchfinder.containers.handlers.HandlerLightland;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerNetTerminal;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerPortableCell;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerShulkerbox;
@@ -16,6 +19,16 @@ public final class ContainerRegistrar {
     }
 
     public static void register() {
+        if (ModList.get().isLoaded("l2backpack")) {
+            WrenchFinder.containerManager.register(new HandlerLightland());
+            WrenchFinder.LOGGER.info("L2Backpack integration added");
+        }
+
+        if (ModList.get().isLoaded("botania")) {
+            WrenchFinder.containerManager.register(new HandlerBotania());
+            WrenchFinder.LOGGER.info("Botania integration added");
+        }
+
         if (ModList.get().isLoaded("ae2")) {
             WrenchFinder.containerManager.register(new HandlerPortableCell());
             WrenchFinder.containerManager.register(new HandlerWirelessTerminal());
@@ -33,6 +46,7 @@ public final class ContainerRegistrar {
         }
 
         if (ModList.get().isLoaded("beyonddimensions")) {
+            WrenchFinder.containerManager.register(new HandlerDimensionsNet());
             WrenchFinder.containerManager.register(new HandlerNetTerminal());
             WrenchFinder.LOGGER.info("Beyond Dimensions integration added");
         }

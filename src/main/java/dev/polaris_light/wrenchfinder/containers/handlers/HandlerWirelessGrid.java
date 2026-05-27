@@ -7,7 +7,6 @@ import com.refinedmods.refinedstorage.api.network.storage.StorageNetworkComponen
 import com.refinedmods.refinedstorage.api.storage.Actor;
 import com.refinedmods.refinedstorage.common.Platform;
 import com.refinedmods.refinedstorage.common.api.RefinedStorageApi;
-import com.refinedmods.refinedstorage.common.api.support.energy.EnergyItemContext;
 import com.refinedmods.refinedstorage.common.api.support.network.item.NetworkItemPlayerValidator;
 import com.refinedmods.refinedstorage.common.api.support.network.item.NetworkItemTargetBlockEntity;
 import com.refinedmods.refinedstorage.common.content.DataComponents;
@@ -15,12 +14,13 @@ import com.refinedmods.refinedstorage.common.grid.WirelessGridItem;
 import com.refinedmods.refinedstorage.common.support.resource.ItemResource;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import dev.polaris_light.wrenchfinder.api.IContainerHandler;
 import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
@@ -42,7 +42,7 @@ public class HandlerWirelessGrid implements IContainerHandler {
         int x = pos.pos().getX();
         int y = pos.pos().getY();
         int z = pos.pos().getZ();
-        Identifier dim = pos.dimension().identifier();
+        String dim = pos.dimension().location().toString();
         return (x * 31 + y * 17 + z) ^ dim.hashCode();
     }
 
@@ -129,8 +129,8 @@ public class HandlerWirelessGrid implements IContainerHandler {
         GlobalPos pos = stack.get(DataComponents.INSTANCE.getNetworkLocation());
         if (pos == null) return null;
 
-        if (player.level() == null || player.level().getServer() == null) return null;
-        ServerLevel targetLevel = player.level().getServer().getLevel(pos.dimension());
+        if (player.getServer() == null) return null;
+        Level targetLevel = player.getServer().getLevel(pos.dimension());
         if (targetLevel == null || !targetLevel.isLoaded(pos.pos())) return null;
 
         BlockEntity blockEntity = targetLevel.getBlockEntity(pos.pos());
@@ -169,20 +169,20 @@ public class HandlerWirelessGrid implements IContainerHandler {
     }
 
     private long getItemEnergyStored(ItemStack stack) {
-        return RefinedStorageApi.INSTANCE.getEnergyStorage(stack, EnergyItemContext.READONLY)
+        return RefinedStorageApi.INSTANCE.getEnergyStorage(stack)
             .map(energyStorage -> Math.max(0L, energyStorage.getStored()))
             .orElse(0L);
     }
 
     private void drainItemEnergy(ItemStack stack, long amount) {
         if (amount <= 0) return;
-        RefinedStorageApi.INSTANCE.getEnergyStorage(stack, EnergyItemContext.READONLY)
+        RefinedStorageApi.INSTANCE.getEnergyStorage(stack)
             .ifPresent(energyStorage -> energyStorage.extract(amount, Action.EXECUTE));
     }
 
     private boolean isCreativeWirelessGrid(ItemStack stack) {
         Item item = stack.getItem();
-        Identifier location = BuiltInRegistries.ITEM.getKey(item);
+        ResourceLocation location = BuiltInRegistries.ITEM.getKey(item);
         return location != null && location.toString().equals("refinedstorage:creative_wireless_grid");
     }
 }

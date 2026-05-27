@@ -4,7 +4,7 @@ import dev.polaris_light.wrenchfinder.containers.ContainerManager;
 import dev.polaris_light.wrenchfinder.containers.ContainerRegistrar;
 import dev.polaris_light.wrenchfinder.config.ClientConfig;
 import dev.polaris_light.wrenchfinder.network.ModMessages;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -32,7 +32,7 @@ public class WrenchFinder {
         ContainerRegistrar.register();
     }
 
-    public static Identifier loc(String path) {
-        return Identifier.fromNamespaceAndPath(MODID, path);
+    public static ResourceLocation loc(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 }

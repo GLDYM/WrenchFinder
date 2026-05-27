@@ -1,5 +1,6 @@
 {
   "key.wrenchfinder.lookup": "Find Matching Item",
+  "key.categories.wrenchfinder": "Wrench Finder",
   "key.categories.wrenchfinder.category": "Wrench Finder",
   "wrenchfinder.category": "Wrench Finder",
   "message.wrenchfinder.not_pointing_block": "Aim at a block first.",

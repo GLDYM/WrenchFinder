@@ -3,16 +3,24 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.141'
+    id 'net.neoforged.moddev' version '2.0.115'
 }
 
 version = "${mod_version}"
 group = "${mod_group_id}"
+base {
+    archivesName = "${mod_id}-${mc_version}"
+}
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 neoForge {
     version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
 
     runs {
         client {
@@ -27,7 +35,7 @@ neoForge {
         }
 
         data {
-            clientData()
+            data()
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
@@ -70,10 +78,14 @@ repositories {
 }
 
 dependencies {
-    implementation "me.shedaniel.cloth:cloth-config-neoforge:26.1.154"
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:15.0.140"
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
 
+    compileOnly "vazkii.botania:botania-neoforge-1.21.1:${botania_version}"
+    compileOnly "curse.maven:l2-backpack-620229:${l2backpack_fileid}"
+    compileOnly "curse.maven:l2library-620203:${l2library_fileid}"
     compileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}"
+    runtimeOnly 'org.appliedenergistics:guideme:21.1.15'
     runtimeOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}"
     compileOnly "curse.maven:toms-storage-378609:${tomsstorage_fileid}"
     compileOnly "curse.maven:refined-storage-243076:${refined_storage_fileid}"
@@ -140,5 +152,5 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.named('jar') {
-    archiveFileName.set("${mod_id}-${minecraft_version}-${mod_version}.jar") // Set the full name of the generated jar to include the version
+    archiveFileName.set("${mod_id}-${mc_version}-${mod_version}.jar")
 }

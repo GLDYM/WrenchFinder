@@ -1,22 +1,18 @@
 package dev.polaris_light.wrenchfinder.containers.handlers;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import dev.polaris_light.wrenchfinder.WrenchFinder;
 import dev.polaris_light.wrenchfinder.api.IContainerHandler;
 import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
 import dev.polaris_light.wrenchfinder.logic.InventoryUtil;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
-public class HandlerCapability implements IContainerHandler
-{
+public class HandlerCapability implements IContainerHandler {
     @Override
     public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
-        return inventoryStack != null && !inventoryStack.isEmpty() &&
-                ItemAccess.forStack(inventoryStack).getCapability(Capabilities.Item.ITEM) != null;
+        return inventoryStack != null && inventoryStack.getCapability(Capabilities.ItemHandler.ITEM) != null;
     }
 
     @Override
@@ -26,15 +22,19 @@ public class HandlerCapability implements IContainerHandler
 
     @Override
     public int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack) {
-        ResourceHandler<ItemResource> resourceHandler = ItemAccess.forStack(inventoryStack).getCapability(Capabilities.Item.ITEM);
-        if(resourceHandler == null) return 0;
+        IItemHandler itemHandler = inventoryStack.getCapability(Capabilities.ItemHandler.ITEM);
+        if (itemHandler == null) {
+            return 0;
+        }
 
         int total = 0;
 
-        for(int i = 0; i < resourceHandler.size(); i++) {
-            ItemResource containerResource = resourceHandler.getResource(i);
-            if(!containerResource.isEmpty() && containerResource.matches(itemStack)) {
-                total += Math.max(0, resourceHandler.getAmountAsInt(i));
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            ItemStack containerStack = itemHandler.getStackInSlot(i);
+            if (InventoryUtil.stackEquals(itemStack, containerStack)) {
+                total += Math.max(0, containerStack.getCount());
+            } else {
+                total += WrenchFinder.containerManager.countItems(player, trace, itemStack, containerStack);
             }
         }
         return total;
@@ -42,23 +42,27 @@ public class HandlerCapability implements IContainerHandler
 
     @Override
     public int useItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack, int count) {
-        ResourceHandler<ItemResource> resourceHandler = ItemAccess.forStack(inventoryStack).getCapability(Capabilities.Item.ITEM);
-        if(resourceHandler == null) return 0;
+        IItemHandler itemHandler = inventoryStack.getCapability(Capabilities.ItemHandler.ITEM);
+        if (itemHandler == null) {
+            return 0;
+        }
 
-        try (var tx = Transaction.openRoot()) {
-            int initialCount = count;
-            for(int i = 0; i < resourceHandler.size(); i++) {
-                ItemResource handlerResource = resourceHandler.getResource(i);
-                if(!handlerResource.isEmpty() && InventoryUtil.stackEquals(itemStack, handlerResource.toStack())) {
-                    int extracted = resourceHandler.extract(i, handlerResource, count, tx);
-                    if(extracted > 0) {
-                        count -= extracted;
-                        if(count <= 0) break;
-                    }
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            ItemStack handlerStack = itemHandler.getStackInSlot(i);
+            if (InventoryUtil.stackEquals(itemStack, handlerStack)) {
+                ItemStack extracted = itemHandler.extractItem(i, count, false);
+                count -= extracted.getCount();
+                if (count <= 0) {
+                    break;
+                }
+            } else {
+                int before = count;
+                count = WrenchFinder.containerManager.useItems(player, trace, itemStack, handlerStack, count);
+                if (count < before && count <= 0) {
+                    break;
                 }
             }
-            if(initialCount != count) tx.commit();
-            return count;
         }
+        return count;
     }
 }

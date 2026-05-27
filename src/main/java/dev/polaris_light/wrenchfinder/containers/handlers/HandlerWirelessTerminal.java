@@ -95,13 +95,13 @@ public class HandlerWirelessTerminal implements IContainerHandler {
                 host.getInventory();
 
                 if (host.getActionableNode() == null) {
-                    player.sendOverlayMessage(PlayerMessages.OutOfRange.text());
+                    player.displayClientMessage(PlayerMessages.OutOfRange.text(), true);
                     return null;
                 }
 
                 double power = wireless.getAECurrentPower(terminal);
                 if (power <= 0) {
-                    player.sendOverlayMessage(PlayerMessages.DeviceNotPowered.text());
+                    player.displayClientMessage(PlayerMessages.DeviceNotPowered.text(), true);
                     return null;
                 }
 

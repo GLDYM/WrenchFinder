@@ -132,8 +132,20 @@ public class ClientConfig implements ConfigData {
         defaults.add(new RuleEntry("*thermal*:*", List.of(
             new ItemPattern("thermal:wrench")
         )));
+        defaults.add(new RuleEntry("*mekanism*:*", List.of(
+            new ItemPattern("mekanism:configurator")
+        )));
+        defaults.add(new RuleEntry("ars_nouveau*:*", List.of(
+            new ItemPattern("ars_nouveau:dominion_wand")
+        )));
+        defaults.add(new RuleEntry("laserio*:*", List.of(
+            new ItemPattern("laserio:laser_wrench")
+        )));
         defaults.add(new RuleEntry("*integrateddynamics*:*", List.of(
             new ItemPattern("integrateddynamics:wrench")
+        )));
+        defaults.add(new RuleEntry("*immersiveengineering*:*", List.of(
+            new ItemPattern("immersiveengineering:tool")
         )));
         defaults.add(new RuleEntry("*oritech*:*", List.of(
             new ItemPattern("oritech:wrench")

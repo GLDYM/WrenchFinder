@@ -3,7 +3,7 @@ package dev.polaris_light.wrenchfinder.logic;
 import dev.polaris_light.wrenchfinder.config.ClientConfig;
 import dev.polaris_light.wrenchfinder.config.LookupRule;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +16,7 @@ public final class ClientRuleResolver {
     private ClientRuleResolver() {
     }
 
-    public static List<String> resolve(Identifier blockId, BlockState state) {
+    public static List<String> resolve(ResourceLocation blockId, BlockState state) {
         LinkedHashSet<String> resolved = new LinkedHashSet<>();
 
         for (LookupRule rule : ClientConfig.get().compiledRules()) {
@@ -28,7 +28,7 @@ public final class ClientRuleResolver {
         if (resolved.isEmpty() && ClientConfig.get().fallbackToBlockItem) {
             Item item = state.getBlock().asItem();
             if (item != Items.AIR) {
-                Identifier itemId = BuiltInRegistries.ITEM.getKey(item);
+                ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
                 if (itemId != null) {
                     resolved.add(itemId.toString());
                 }

@@ -1,7 +1,8 @@
 {
   "key.wrenchfinder.lookup": "探囊取物",
+  "key.categories.wrenchfinder": "Wrench Finder",
   "key.categories.wrenchfinder.category": "Wrench Finder",
-  "wrenchfinder.category": "Wrenc hFinder",
+  "wrenchfinder.category": "Wrench Finder",
   "message.wrenchfinder.not_pointing_block": "请先对准一个方块。",
   "message.wrenchfinder.no_rule": "这个方块没有匹配到取物规则。",
   "message.wrenchfinder.not_found": "没有在背包或已连接存储中找到匹配物品。",
