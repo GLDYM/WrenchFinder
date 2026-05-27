@@ -1,7 +1,6 @@
 package dev.polaris_light.wrenchfinder.logic;
 
 import dev.polaris_light.wrenchfinder.config.HandActionMode;
-import dev.polaris_light.wrenchfinder.basics.WandUtil;
 import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
 import dev.polaris_light.wrenchfinder.WrenchFinder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -115,7 +114,7 @@ public final class ItemLookupService {
     }
 
     private static ExternalMatch findExternalMatch(ServerPlayer player, List<String> itemPatterns) {
-        List<ItemStack> carriers = WandUtil.getFullInv(player);
+        List<ItemStack> carriers = InventoryUtil.getFullInv(player);
         for (String pattern : itemPatterns) {
             for (Item item : BuiltInRegistries.ITEM) {
                 if (!GlobMatcher.matches(BuiltInRegistries.ITEM.getKey(item).toString(), pattern)) {

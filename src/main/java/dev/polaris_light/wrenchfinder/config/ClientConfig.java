@@ -4,7 +4,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class ClientConfig implements ConfigData {
             return;
         }
 
-        var holder = AutoConfig.register(ClientConfig.class, Toml4jConfigSerializer::new);
+        var holder = AutoConfig.register(ClientConfig.class, GsonConfigSerializer::new);
         holder.load();
         sanitizeInPlace(holder.getConfig());
         holder.save();
@@ -105,16 +105,54 @@ public class ClientConfig implements ConfigData {
 
     private static List<RuleEntry> defaultRules() {
         List<RuleEntry> defaults = new ArrayList<>();
-        defaults.add(new RuleEntry("minecraft:crafting_table", List.of(new ItemPattern("minecraft:crafting_table"))));
-        defaults.add(new RuleEntry("minecraft:furnace", List.of(
-            new ItemPattern("minecraft:furnace"),
-            new ItemPattern("minecraft:blast_furnace"),
-            new ItemPattern("minecraft:smoker")
+        defaults.add(new RuleEntry("minecraft:bedrock", List.of(
+            new ItemPattern("create:wrench"),
+            new ItemPattern("minecraft:barrier")
         )));
-        defaults.add(new RuleEntry("minecraft:*_planks", List.of(
-            new ItemPattern("minecraft:oak_planks"),
-            new ItemPattern("minecraft:spruce_planks"),
-            new ItemPattern("minecraft:birch_planks")
+        defaults.add(new RuleEntry("*create*:*", List.of(
+            new ItemPattern("create:wrench")
+        )));
+        defaults.add(new RuleEntry("botania:*", List.of(
+            new ItemPattern("botania:dreamwood_wand"),
+            new ItemPattern("botania:twigwand")
+        )));
+        defaults.add(new RuleEntry("appliedenergistics2:*", List.of(
+            new ItemPattern("ae2:network_tool"),
+            new ItemPattern("ae2:certus_quartz_wrench"),
+            new ItemPattern("ae2:nether_quartz_wrench")
+        )));
+        defaults.add(new RuleEntry("*ae*:*", List.of(
+            new ItemPattern("ae2:network_tool"),
+            new ItemPattern("ae2:certus_quartz_wrench"),
+            new ItemPattern("ae2:nether_quartz_wrench")
+        )));
+        defaults.add(new RuleEntry("*pipez*:*", List.of(
+            new ItemPattern("pipez:wrench")
+        )));
+        defaults.add(new RuleEntry("*thermal*:*", List.of(
+            new ItemPattern("thermal:wrench")
+        )));
+        defaults.add(new RuleEntry("*integrateddynamics*:*", List.of(
+            new ItemPattern("integrateddynamics:wrench")
+        )));
+        defaults.add(new RuleEntry("*oritech*:*", List.of(
+            new ItemPattern("oritech:wrench")
+        )));
+        defaults.add(new RuleEntry("*anvilcraft*:*", List.of(
+            new ItemPattern("anvilcraft:anvil_hammer"),
+            new ItemPattern("anvilcraft:royal_anvil_hammer"),
+            new ItemPattern("anvilcraft:ember_anvil_hammer"),
+            new ItemPattern("anvilcraft:transcendence_anvil_hammer")
+        )));
+        defaults.add(new RuleEntry("kaleidoscope_cookery:stockpot", List.of(
+            new ItemPattern("kaleidoscope_cookery:stockpot_lid")
+        )));
+        defaults.add(new RuleEntry("kaleidoscope_cookery:pot", List.of(
+            new ItemPattern("kaleidoscope_cookery:kitchen_shovel"),
+            new ItemPattern("kaleidoscope_cookery:oil_pot")
+        )));
+        defaults.add(new RuleEntry("kaleidoscope_cookery:enamel_basin", List.of(
+            new ItemPattern("kaleidoscope_cookery:kitchen_shovel")
         )));
         return defaults;
     }

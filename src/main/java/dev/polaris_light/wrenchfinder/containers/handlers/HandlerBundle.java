@@ -8,7 +8,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.BundleContents;
 import dev.polaris_light.wrenchfinder.api.IContainerHandler;
 import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
-import dev.polaris_light.wrenchfinder.basics.WandUtil;
+import dev.polaris_light.wrenchfinder.logic.InventoryUtil;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +28,7 @@ public class HandlerBundle implements IContainerHandler
 
     @Override
     public int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack) {
-        return getContents(inventoryStack).filter((stack) -> WandUtil.stackEquals(stack, itemStack))
+        return getContents(inventoryStack).filter((stack) -> InventoryUtil.stackEquals(stack, itemStack))
                 .map(ItemStack::getCount).reduce(0, Integer::sum);
     }
 
@@ -37,7 +37,7 @@ public class HandlerBundle implements IContainerHandler
         AtomicInteger newCount = new AtomicInteger(count);
 
         List<ItemStack> itemStacks = getContents(inventoryStack).filter((stack -> {
-            if(WandUtil.stackEquals(stack, itemStack)) {
+            if(InventoryUtil.stackEquals(stack, itemStack)) {
                 int toTake = Math.min(newCount.get(), stack.getCount());
                 stack.shrink(toTake);
                 newCount.set(newCount.get() - toTake);

@@ -140,5 +140,5 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.named('jar') {
-    archiveFileName.set("${mod_id}-kots-${minecraft_version}-${mod_version}.jar") // Set the full name of the generated jar to include the version
+    archiveFileName.set("${mod_id}-${minecraft_version}-${mod_version}.jar") // Set the full name of the generated jar to include the version
 }

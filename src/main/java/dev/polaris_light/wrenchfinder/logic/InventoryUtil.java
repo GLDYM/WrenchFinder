@@ -1,4 +1,4 @@
-package dev.polaris_light.wrenchfinder.basics;
+package dev.polaris_light.wrenchfinder.logic;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public final class WandUtil {
-    private WandUtil() {
+public final class InventoryUtil {
+    private InventoryUtil() {
     }
 
     public static boolean stackEquals(ItemStack stackA, ItemStack stackB) {

@@ -8,8 +8,8 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import dev.polaris_light.wrenchfinder.api.IContainerHandler;
-import dev.polaris_light.wrenchfinder.basics.WandUtil;
 import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
+import dev.polaris_light.wrenchfinder.logic.InventoryUtil;
 
 public class HandlerCapability implements IContainerHandler
 {
@@ -49,7 +49,7 @@ public class HandlerCapability implements IContainerHandler
             int initialCount = count;
             for(int i = 0; i < resourceHandler.size(); i++) {
                 ItemResource handlerResource = resourceHandler.getResource(i);
-                if(!handlerResource.isEmpty() && WandUtil.stackEquals(itemStack, handlerResource.toStack())) {
+                if(!handlerResource.isEmpty() && InventoryUtil.stackEquals(itemStack, handlerResource.toStack())) {
                     int extracted = resourceHandler.extract(i, handlerResource, count, tx);
                     if(extracted > 0) {
                         count -= extracted;

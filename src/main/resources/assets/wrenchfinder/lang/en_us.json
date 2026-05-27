@@ -1,7 +1,7 @@
 {
   "key.wrenchfinder.lookup": "Find Matching Item",
-  "key.categories.wrenchfinder": "WrenchFinder",
-  "wrenchfinder.category": "WrenchFinder",
+  "key.categories.wrenchfinder.category": "Wrench Finder",
+  "wrenchfinder.category": "Wrench Finder",
   "message.wrenchfinder.not_pointing_block": "Aim at a block first.",
   "message.wrenchfinder.no_rule": "No matching lookup rule for this block.",
   "message.wrenchfinder.not_found": "Could not find a matching item in your inventory or linked storage.",

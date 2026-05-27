@@ -13,8 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import dev.polaris_light.wrenchfinder.api.IContainerHandler;
-import dev.polaris_light.wrenchfinder.basics.WandUtil;
 import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
+import dev.polaris_light.wrenchfinder.logic.InventoryUtil;
 
 public class HandlerAdvWirelessTerminal implements IContainerHandler {
 
@@ -43,7 +43,7 @@ public class HandlerAdvWirelessTerminal implements IContainerHandler {
         if (terminal == null) return 0;
         int found = 0;
         for (var entry : terminal.getStacks().entrySet()) {
-            if (WandUtil.stackEquals(entry.getKey().getStack(), itemStack)) {
+            if (InventoryUtil.stackEquals(entry.getKey().getStack(), itemStack)) {
                 found += entry.getValue().getQuantity();
                 if (found >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
             }

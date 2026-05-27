@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import dev.polaris_light.wrenchfinder.WrenchFinder;
 import dev.polaris_light.wrenchfinder.api.IContainerHandler;
-import dev.polaris_light.wrenchfinder.basics.WandUtil;
 import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
+import dev.polaris_light.wrenchfinder.logic.InventoryUtil;
 
 public class HandlerShulkerbox implements IContainerHandler
 {
@@ -31,7 +31,7 @@ public class HandlerShulkerbox implements IContainerHandler
         int count = 0;
 
         for(ItemStack stack : getItemList(inventoryStack)) {
-            if(WandUtil.stackEquals(stack, itemStack)) {
+            if(InventoryUtil.stackEquals(stack, itemStack)) {
                 count += stack.getCount();
             } else {
                 count += WrenchFinder.containerManager.countItems(player, trace, itemStack, stack);
@@ -47,7 +47,7 @@ public class HandlerShulkerbox implements IContainerHandler
         boolean changed = false;
 
         for(ItemStack stack : itemList) {
-            if(WandUtil.stackEquals(stack, itemStack)) {
+            if(InventoryUtil.stackEquals(stack, itemStack)) {
                 int toTake = Math.min(count, stack.getCount());
                 stack.shrink(toTake);
                 count -= toTake;

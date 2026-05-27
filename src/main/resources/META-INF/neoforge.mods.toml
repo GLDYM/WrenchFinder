@@ -27,6 +27,13 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.wrenchfinder]]
+modId = "cloth_config"
+type = "required"
+versionRange = "[26.1.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.wrenchfinder]]
 modId = "beyonddimensions"
 type = "optional"
 versionRange = "[0.7.0,)"
