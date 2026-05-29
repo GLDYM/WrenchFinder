@@ -1,19 +1,16 @@
 package dev.polaris_light.wrenchfinder.containers.handlers;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.StorageHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.contents.PortableCellMenuHost;
 import appeng.items.tools.powered.PortableCellItem;
-import appeng.menu.locator.MenuLocators;
+import dev.polaris_light.wrenchfinder.api.IContainerHandler;
+import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import dev.polaris_light.wrenchfinder.api.IContainerHandler;
-import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
 
 public class HandlerPortableCell implements IContainerHandler {
 
@@ -30,7 +27,6 @@ public class HandlerPortableCell implements IContainerHandler {
     @Override
     public int countItems(Player player, ContainerTrace trace, ItemStack target, ItemStack cell) {
         if (player instanceof ServerPlayer serverPlayer) {
-
             MEStorage storage = getStorage(serverPlayer, cell);
             if (storage == null) return 0;
 
@@ -49,39 +45,30 @@ public class HandlerPortableCell implements IContainerHandler {
         return 0;
     }
 
-
     @Override
     public int useItems(Player player, ContainerTrace trace, ItemStack target, ItemStack cell, int count) {
         if (player instanceof ServerPlayer serverPlayer) {
-            PortableCellMenuHost<?> host = getHost(serverPlayer, cell);
-            if (host == null) return count;
-
-            MEStorage storage = host.getInventory();
+            MEStorage storage = getStorage(serverPlayer, cell);
             if (storage == null) return count;
 
             AEItemKey key = AEItemKey.of(target);
             if (key == null) return count;
 
-            var source = IActionSource.ofPlayer(serverPlayer);
-            long extracted = StorageHelper.poweredExtraction(host, storage, key, count, source, Actionable.MODULATE);
-            long remaining = count - extracted;
+            var extracted = storage.extract(key, count, Actionable.MODULATE, null);
+            long remaining = count - (int) extracted;
             return remaining > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) remaining;
         }
         return count;
     }
 
     private MEStorage getStorage(ServerPlayer player, ItemStack cell) {
-        var host = getHost(player, cell);
-        return host != null ? host.getInventory() : null;
-    }
-
-    private PortableCellMenuHost<?> getHost(ServerPlayer player, ItemStack cell) {
         if (cell.getItem() instanceof PortableCellItem c) {
             try {
-                PortableCellMenuHost<?> host = new PortableCellMenuHost<>(
-                    c,
+                PortableCellMenuHost host = new PortableCellMenuHost(
                     player,
-                    MenuLocators.forStack(cell),
+                    null,
+                    c,
+                    cell,
                     (p, menu) -> {}
                 );
 
@@ -91,7 +78,7 @@ public class HandlerPortableCell implements IContainerHandler {
                     return null;
                 }
 
-                return host;
+                return host.getInventory();
             } catch (Exception e) {
                 return null;
             }

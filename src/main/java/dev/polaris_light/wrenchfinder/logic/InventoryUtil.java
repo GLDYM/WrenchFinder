@@ -4,7 +4,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.fml.ModList;
+import net.minecraftforge.fml.ModList;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
@@ -17,16 +17,15 @@ public final class InventoryUtil {
     }
 
     public static boolean stackEquals(ItemStack stackA, ItemStack stackB) {
-        return ItemStack.isSameItemSameComponents(stackA, stackB);
+        return ItemStack.isSameItemSameTags(stackA, stackB);
     }
 
     public static List<ItemStack> getArmor(Player player) {
         ArrayList<ItemStack> armor = new ArrayList<>(4);
-        int inventorySize = Inventory.INVENTORY_SIZE;
-        armor.add(player.getInventory().getItem(EquipmentSlot.FEET.getIndex(inventorySize)));
-        armor.add(player.getInventory().getItem(EquipmentSlot.LEGS.getIndex(inventorySize)));
-        armor.add(player.getInventory().getItem(EquipmentSlot.CHEST.getIndex(inventorySize)));
-        armor.add(player.getInventory().getItem(EquipmentSlot.HEAD.getIndex(inventorySize)));
+        armor.add(player.getInventory().armor.get(0));
+        armor.add(player.getInventory().armor.get(1));
+        armor.add(player.getInventory().armor.get(2));
+        armor.add(player.getInventory().armor.get(3));
         return armor;
     }
 

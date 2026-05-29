@@ -1,16 +1,14 @@
 package dev.polaris_light.wrenchfinder.containers.handlers;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import dev.polaris_light.wrenchfinder.api.IContainerHandler;
-import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
-
 import com.wintercogs.beyonddimensions.api.dimensionnet.DimensionsNet;
 import com.wintercogs.beyonddimensions.api.dimensionnet.UnifiedStorage;
 import com.wintercogs.beyonddimensions.api.storage.key.impl.ItemStackKey;
 import com.wintercogs.beyonddimensions.common.item.NetedItem;
-import com.wintercogs.beyonddimensions.common.init.BDDataComponents;
 import com.wintercogs.beyonddimensions.common.item.NetTerminalItem;
+import dev.polaris_light.wrenchfinder.api.IContainerHandler;
+import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class HandlerNetTerminal implements IContainerHandler {
 
@@ -21,9 +19,9 @@ public class HandlerNetTerminal implements IContainerHandler {
 
     @Override
     public int getSignature(Player player, ItemStack inventoryStack) {
-        if (!(inventoryStack.getItem() instanceof NetTerminalItem)) return -1;
-        int netId = inventoryStack.getOrDefault(BDDataComponents.NET_ID_DATA, -1);
-        return (netId >= 0) ? 10000 + netId : -1;
+        if (!(inventoryStack.getItem() instanceof NetTerminalItem terminal)) return -1;
+        int id = NetedItem.getNetId(inventoryStack);
+        return (id != -1) ? 10000 + id : -1;
     }
 
     @Override
@@ -33,7 +31,6 @@ public class HandlerNetTerminal implements IContainerHandler {
 
         UnifiedStorage storage = net.getUnifiedStorage();
         long result = storage.extract(new ItemStackKey(itemStack), Integer.MAX_VALUE, true, false).amount();
-
         if (result > Integer.MAX_VALUE) {
             return Integer.MAX_VALUE;
         }
@@ -48,7 +45,6 @@ public class HandlerNetTerminal implements IContainerHandler {
 
         UnifiedStorage storage = net.getUnifiedStorage();
         long result = storage.extract(new ItemStackKey(itemStack), count, false, false).amount();
-
         if (result > count) {
             return 0;
         }

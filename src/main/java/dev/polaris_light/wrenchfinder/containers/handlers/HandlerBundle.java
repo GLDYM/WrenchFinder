@@ -1,13 +1,13 @@
 package dev.polaris_light.wrenchfinder.containers.handlers;
 
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.BundleContents;
 import dev.polaris_light.wrenchfinder.api.IContainerHandler;
 import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
 import dev.polaris_light.wrenchfinder.logic.InventoryUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -50,12 +50,24 @@ public class HandlerBundle implements IContainerHandler
     }
 
     private Stream<ItemStack> getContents(ItemStack bundleStack) {
-        BundleContents contents = bundleStack.getOrDefault(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY);
-        return contents.itemCopyStream();
+        CompoundTag compoundTag = bundleStack.getTag();
+        if (compoundTag == null) {
+            return Stream.empty();
+        }
+
+        ListTag listTag = compoundTag.getList("Items", 10);
+        return listTag.stream().map(CompoundTag.class::cast).map(ItemStack::of);
     }
 
     private void setItemList(ItemStack itemStack, List<ItemStack> itemStacks) {
-        BundleContents contents = new BundleContents(itemStacks);
-        itemStack.set(DataComponents.BUNDLE_CONTENTS, contents);
+        CompoundTag rootTag = itemStack.getOrCreateTag();
+        ListTag listTag = new ListTag();
+        rootTag.put("Items", listTag);
+
+        for (ItemStack stack : itemStacks) {
+            CompoundTag itemTag = new CompoundTag();
+            stack.save(itemTag);
+            listTag.add(itemTag);
+        }
     }
 }

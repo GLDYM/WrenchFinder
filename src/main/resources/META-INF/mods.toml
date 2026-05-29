@@ -1,0 +1,43 @@
+modLoader = "javafml"
+loaderVersion = "[46,)"
+license = "MIT"
+
+[[mods]]
+modId = "wrenchfinder"
+version = "${file.jarVersion}"
+displayName = "Wrench Finder"
+logoFile = "icon.png"
+authors = "Polaris_Light"
+description = '''
+Wrench Finder lets you aim at a block and press a key to pull a matching item into your main hand from everywhere.
+
+Item matching is driven by client-side rules with wildcard support and ordered item lists. The mod searches your inventory plus supported storage items from other mods, then equips the first match it can retrieve.
+'''
+
+[[dependencies.wrenchfinder]]
+modId = "forge"
+mandatory = true
+versionRange = "[46,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.wrenchfinder]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20,1.21)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.wrenchfinder]]
+modId = "cloth_config"
+mandatory = true
+versionRange = "[11.0.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.wrenchfinder]]
+modId = "beyonddimensions"
+mandatory = false
+versionRange = "[0.7.0,1.0.0)"
+ordering = "NONE"
+side = "BOTH"

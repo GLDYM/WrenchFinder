@@ -3,7 +3,6 @@ package dev.polaris_light.wrenchfinder.config;
 import dev.polaris_light.wrenchfinder.logic.GlobMatcher;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -39,27 +38,27 @@ public record LookupRule(String blockPattern, List<String> itemPatterns) {
         return new LookupRule(normalizedBlockPattern, new ArrayList<>(normalizedPatterns));
     }
 
-    public static LookupRule parse(String raw) {
-        if (raw == null) {
-            return null;
-        }
+    // public static LookupRule parse(String raw) {
+    //     if (raw == null) {
+    //         return null;
+    //     }
 
-        String trimmed = raw.trim();
-        if (trimmed.isEmpty()) {
-            return null;
-        }
+    //     String trimmed = raw.trim();
+    //     if (trimmed.isEmpty()) {
+    //         return null;
+    //     }
 
-        String[] split = trimmed.contains("=>")
-            ? trimmed.split("=>", 2)
-            : trimmed.split("=", 2);
-        if (split.length != 2) {
-            return null;
-        }
+    //     String[] split = trimmed.contains("=>")
+    //         ? trimmed.split("=>", 2)
+    //         : trimmed.split("=", 2);
+    //     if (split.length != 2) {
+    //         return null;
+    //     }
 
-        List<String> patterns = new ArrayList<>();
-        Collections.addAll(patterns, split[1].split(","));
-        return of(split[0], patterns);
-    }
+    //     List<String> patterns = new ArrayList<>();
+    //     Collections.addAll(patterns, split[1].split(","));
+    //     return of(split[0], patterns);
+    // }
 
     public boolean matches(String blockId) {
         return GlobMatcher.matches(blockId, blockPattern);

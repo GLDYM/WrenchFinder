@@ -7,11 +7,10 @@ import dev.polaris_light.wrenchfinder.logic.InventoryUtil;
 import dev.xkmc.l2backpack.content.capability.InvPickupCap;
 import dev.xkmc.l2backpack.content.capability.PickupModeCap;
 import dev.xkmc.l2backpack.content.capability.PickupTrace;
-import dev.xkmc.l2backpack.init.registrate.LBMisc;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class HandlerLightland implements IContainerHandler {
     @Override
@@ -96,11 +95,10 @@ public class HandlerLightland implements IContainerHandler {
     }
 
     private InvPickupCap<?> resolveInvCap(ItemStack stack) {
-        if (stack == null || stack.isEmpty()) {
-            return null;
-        }
-
-        PickupModeCap cap = stack.getCapability(LBMisc.PICKUP);
-        return cap instanceof InvPickupCap<?> invPickupCap ? invPickupCap : null;
+        return stack.getCapability(PickupModeCap.TOKEN)
+            .resolve()
+            .filter(c -> c instanceof InvPickupCap<?>)
+            .map(c -> (InvPickupCap<?>) c)
+            .orElse(null);
     }
 }

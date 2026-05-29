@@ -1,19 +1,17 @@
 package dev.polaris_light.wrenchfinder.containers.handlers;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.security.IActionSource;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.StorageHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.items.tools.powered.WirelessTerminalItem;
-import appeng.menu.locator.MenuLocators;
+import dev.polaris_light.wrenchfinder.api.IContainerHandler;
+import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import dev.polaris_light.wrenchfinder.api.IContainerHandler;
-import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
 
 public class HandlerWirelessTerminal implements IContainerHandler {
 
@@ -22,7 +20,7 @@ public class HandlerWirelessTerminal implements IContainerHandler {
         return inventoryStack.getItem() instanceof WirelessTerminalItem;
     }
 
-    @Override   
+    @Override
     public int getSignature(Player player, ItemStack inventoryStack) {
         if (player instanceof ServerPlayer serverPlayer) {
             MEStorage storage = getStorage(serverPlayer, inventoryStack);
@@ -36,7 +34,6 @@ public class HandlerWirelessTerminal implements IContainerHandler {
     @Override
     public int countItems(Player player, ContainerTrace trace, ItemStack target, ItemStack terminal) {
         if (player instanceof ServerPlayer serverPlayer) {
-
             MEStorage storage = getStorage(serverPlayer, terminal);
             if (storage == null) return 0;
 
@@ -55,22 +52,17 @@ public class HandlerWirelessTerminal implements IContainerHandler {
         return 0;
     }
 
-
     @Override
     public int useItems(Player player, ContainerTrace trace, ItemStack target, ItemStack terminal, int count) {
         if (player instanceof ServerPlayer serverPlayer) {
-            WirelessTerminalMenuHost<?> host = getHost(serverPlayer, terminal);
-            if (host == null) return count;
-
-            MEStorage storage = host.getInventory();
+            MEStorage storage = getStorage(serverPlayer, terminal);
             if (storage == null) return count;
 
             AEItemKey key = AEItemKey.of(target);
             if (key == null) return count;
 
-            var source = IActionSource.ofPlayer(serverPlayer);
-            long extracted = StorageHelper.poweredExtraction(host, storage, key, count, source, Actionable.MODULATE);
-            long remaining = count - extracted;
+            var extracted = storage.extract(key, count, Actionable.MODULATE, null);
+            long remaining = count - (int) extracted;
             return remaining > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) remaining;
         }
         return count;
@@ -81,31 +73,30 @@ public class HandlerWirelessTerminal implements IContainerHandler {
         return host != null ? host.getInventory() : null;
     }
 
-    private WirelessTerminalMenuHost<?> getHost(ServerPlayer player, ItemStack terminal) {
+    private WirelessTerminalMenuHost getHost(ServerPlayer player, ItemStack terminal) {
         if (terminal.getItem() instanceof WirelessTerminalItem wireless) {
             try {
-                WirelessTerminalMenuHost<?> host = wireless.getMenuHost(
+                ItemMenuHost menuHost = wireless.getMenuHost(
                     player,
-                    MenuLocators.forStack(terminal),
+                    0,
+                    terminal,
                     null
                 );
 
-                // Some AE2-compatible terminals, such as AE2WTLib quantum-linked terminals,
-                // populate their actionable node lazily when their inventory is queried.
-                host.getInventory();
+                if (menuHost instanceof WirelessTerminalMenuHost host) {
+                    if (!host.rangeCheck()) {
+                        player.displayClientMessage(PlayerMessages.OutOfRange.text(), true);
+                        return null;
+                    }
 
-                if (host.getActionableNode() == null) {
-                    player.displayClientMessage(PlayerMessages.OutOfRange.text(), true);
-                    return null;
+                    double power = wireless.getAECurrentPower(terminal);
+                    if (power <= 0) {
+                        player.displayClientMessage(PlayerMessages.DeviceNotPowered.text(), true);
+                        return null;
+                    }
+
+                    return host;
                 }
-
-                double power = wireless.getAECurrentPower(terminal);
-                if (power <= 0) {
-                    player.displayClientMessage(PlayerMessages.DeviceNotPowered.text(), true);
-                    return null;
-                }
-
-                return host;
             } catch (Exception e) {
                 return null;
             }

@@ -1,16 +1,17 @@
 package dev.polaris_light.wrenchfinder.containers.handlers;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ShulkerBoxBlock;
 import dev.polaris_light.wrenchfinder.WrenchFinder;
 import dev.polaris_light.wrenchfinder.api.IContainerHandler;
 import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
 import dev.polaris_light.wrenchfinder.logic.InventoryUtil;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
 
 public class HandlerShulkerbox implements IContainerHandler
 {
@@ -72,12 +73,22 @@ public class HandlerShulkerbox implements IContainerHandler
 
     private NonNullList<ItemStack> getItemList(ItemStack itemStack) {
         NonNullList<ItemStack> itemStacks = NonNullList.withSize(SLOTS, ItemStack.EMPTY);
-        ItemContainerContents contents = itemStack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
-        contents.copyInto(itemStacks);
+        CompoundTag rootTag = itemStack.getTag();
+        if (rootTag != null && rootTag.contains("BlockEntityTag", Tag.TAG_COMPOUND)) {
+            CompoundTag entityTag = rootTag.getCompound("BlockEntityTag");
+            if (entityTag.contains("Items", Tag.TAG_LIST)) {
+                ContainerHelper.loadAllItems(entityTag, itemStacks);
+            }
+        }
         return itemStacks;
     }
 
     private void setItemList(ItemStack itemStack, NonNullList<ItemStack> itemStacks) {
-        itemStack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(itemStacks));
+        CompoundTag rootTag = itemStack.getOrCreateTag();
+        CompoundTag entityTag = rootTag.contains("BlockEntityTag", Tag.TAG_COMPOUND)
+            ? rootTag.getCompound("BlockEntityTag")
+            : new CompoundTag();
+        rootTag.put("BlockEntityTag", entityTag);
+        ContainerHelper.saveAllItems(entityTag, itemStacks);
     }
 }

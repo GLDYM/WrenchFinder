@@ -6,13 +6,15 @@ import dev.polaris_light.wrenchfinder.containers.ContainerTrace;
 import dev.polaris_light.wrenchfinder.logic.InventoryUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
+
+import java.util.Optional;
 
 public class HandlerCapability implements IContainerHandler {
     @Override
     public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
-        return inventoryStack != null && inventoryStack.getCapability(Capabilities.ItemHandler.ITEM) != null;
+        return inventoryStack != null && inventoryStack.getCapability(ForgeCapabilities.ITEM_HANDLER).isPresent();
     }
 
     @Override
@@ -22,11 +24,12 @@ public class HandlerCapability implements IContainerHandler {
 
     @Override
     public int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack) {
-        IItemHandler itemHandler = inventoryStack.getCapability(Capabilities.ItemHandler.ITEM);
-        if (itemHandler == null) {
+        Optional<IItemHandler> itemHandlerOptional = inventoryStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
+        if (itemHandlerOptional.isEmpty()) {
             return 0;
         }
 
+        IItemHandler itemHandler = itemHandlerOptional.get();
         int total = 0;
 
         for (int i = 0; i < itemHandler.getSlots(); i++) {
@@ -42,11 +45,12 @@ public class HandlerCapability implements IContainerHandler {
 
     @Override
     public int useItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack, int count) {
-        IItemHandler itemHandler = inventoryStack.getCapability(Capabilities.ItemHandler.ITEM);
-        if (itemHandler == null) {
+        Optional<IItemHandler> itemHandlerOptional = inventoryStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
+        if (itemHandlerOptional.isEmpty()) {
             return 0;
         }
 
+        IItemHandler itemHandler = itemHandlerOptional.get();
         for (int i = 0; i < itemHandler.getSlots(); i++) {
             ItemStack handlerStack = itemHandler.getStackInSlot(i);
             if (InventoryUtil.stackEquals(itemStack, handlerStack)) {

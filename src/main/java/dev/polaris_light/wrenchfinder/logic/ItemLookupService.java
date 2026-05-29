@@ -195,7 +195,7 @@ public final class ItemLookupService {
                 continue;
             }
             ItemStack existing = inventory.getItem(slot);
-            if (existing.isEmpty() || !ItemStack.isSameItemSameComponents(existing, remainder)) {
+            if (existing.isEmpty() || !ItemStack.isSameItemSameTags(existing, remainder)) {
                 continue;
             }
 
