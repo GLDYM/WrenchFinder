@@ -150,6 +150,13 @@ public class ClientConfig implements ConfigData {
         defaults.add(new RuleEntry("*oritech*:*", List.of(
             new ItemPattern("oritech:wrench")
         )));
+        defaults.add(new RuleEntry("functionalstorage:*", List.of(
+            new ItemPattern("functionalstorage:linking_tool"),
+            new ItemPattern("functionalstorage:configuration_tool")
+        )));
+        defaults.add(new RuleEntry("sophisticatedstorage:*", List.of(
+            new ItemPattern("sophisticatedstorage:storage_tool")
+        )));
         defaults.add(new RuleEntry("*anvilcraft*:*", List.of(
             new ItemPattern("anvilcraft:anvil_hammer"),
             new ItemPattern("anvilcraft:royal_anvil_hammer"),
