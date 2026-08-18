@@ -8,7 +8,9 @@ import dev.polaris_light.wrenchfinder.containers.handlers.HandlerCapability;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerDimensionsNet;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerLightland;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerNetTerminal;
+import dev.polaris_light.wrenchfinder.containers.handlers.HandlerOccultism;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerPortableCell;
+import dev.polaris_light.wrenchfinder.containers.handlers.HandlerProjectE;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerShulkerbox;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerWirelessGrid;
 import dev.polaris_light.wrenchfinder.containers.handlers.HandlerWirelessTerminal;
@@ -49,6 +51,16 @@ public final class ContainerRegistrar {
             WrenchFinder.containerManager.register(new HandlerDimensionsNet());
             WrenchFinder.containerManager.register(new HandlerNetTerminal());
             WrenchFinder.LOGGER.info("Beyond Dimensions integration added");
+        }
+
+        if (ModList.get().isLoaded("occultism")) {
+            WrenchFinder.containerManager.register(new HandlerOccultism());
+            WrenchFinder.LOGGER.info("Occultism integration added");
+        }
+
+        if (ModList.get().isLoaded("projecte")) {
+            WrenchFinder.containerManager.register(new HandlerProjectE());
+            WrenchFinder.LOGGER.info("ProjectE integration added");
         }
 
         WrenchFinder.containerManager.register(new HandlerShulkerbox());

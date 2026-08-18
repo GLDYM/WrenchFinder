@@ -75,19 +75,21 @@ public final class ItemLookupService {
     }
 
     private static void applyDirectMatch(ServerPlayer player, DirectMatch match) {
+        Inventory inventory = player.getInventory();
         ItemStack mainHand = player.getMainHandItem().copy();
-
-        if (match.slot == Inventory.SLOT_OFFHAND) {
-            ItemStack found = player.getOffhandItem().copy();
-            player.setItemInHand(InteractionHand.OFF_HAND, mainHand);
-            player.setItemInHand(InteractionHand.MAIN_HAND, found);
-        } else {
-            ItemStack found = player.getInventory().getItem(match.slot).copy();
-            player.getInventory().setItem(match.slot, mainHand);
-            player.setItemInHand(InteractionHand.MAIN_HAND, found);
+        ItemStack found = inventory.removeItemNoUpdate(match.slot);
+        if (found.isEmpty()) {
+            return;
         }
 
-        player.getInventory().setChanged();
+        inventory.setItem(match.slot, mainHand);
+        if (!isSameStack(inventory.getItem(match.slot), mainHand)) {
+            inventory.setItem(match.slot, found);
+            return;
+        }
+        player.setItemInHand(InteractionHand.MAIN_HAND, found);
+
+        inventory.setChanged();
         player.containerMenu.broadcastChanges();
     }
 
@@ -172,6 +174,11 @@ public final class ItemLookupService {
 
     private static boolean matchesPattern(ItemStack stack, String pattern) {
         return GlobMatcher.matches(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(), pattern);
+    }
+
+    private static boolean isSameStack(ItemStack actual, ItemStack expected) {
+        return actual.getCount() == expected.getCount()
+            && ItemStack.isSameItemSameComponents(actual, expected);
     }
 
     private static boolean canStoreInInventory(Inventory inventory, ItemStack stack, int selectedSlot) {
